@@ -45,7 +45,7 @@
   --standard-compliant-cte 
   Allow only CTEs compliant to SQL standard
   (Defaults to on; use --skip-standard-compliant-cte to disable.)
-@@ -1135,6 +1143,11 @@
+@@ -1150,6 +1158,11 @@
   --thread-pool-max-threads=# 
   Maximum allowed number of worker threads in the thread
   pool
@@ -57,7 +57,7 @@
   --thread-pool-oversubscribe=# 
   How many additional active worker threads in a group are
   allowed.
-@@ -1173,8 +1186,8 @@
+@@ -1188,8 +1201,8 @@
   automatically convert it to an on-disk MyISAM or Aria
   table.
   -t, --tmpdir=name   Path for temporary files. Several paths may be specified,
@@ -68,7 +68,7 @@
   --transaction-alloc-block-size=# 
   Allocation block size for transactions to be stored in
   binary log
-@@ -1299,7 +1312,6 @@
+@@ -1314,7 +1327,6 @@
  key-cache-division-limit 100
  key-cache-file-hash-size 512
  key-cache-segments 0
@@ -76,7 +76,7 @@
  lc-messages en_US
  lc-messages-dir MYSQL_SHAREDIR/
  lc-time-names en_US
-@@ -1369,6 +1381,7 @@
+@@ -1384,6 +1396,7 @@
  myisam-stats-method NULLS_UNEQUAL
  myisam-use-mmap FALSE
  mysql56-temporal-format TRUE
@@ -84,7 +84,7 @@
  net-buffer-length 16384
  net-read-timeout 30
  net-retry-count 10
-@@ -1470,6 +1483,8 @@
+@@ -1485,6 +1498,8 @@
  session-track-state-change FALSE
  session-track-system-variables 
  session-track-transaction-info OFF
@@ -93,7 +93,7 @@
  show-slave-auth-info FALSE
  silent-startup FALSE
  skip-grant-tables TRUE
-@@ -1494,6 +1509,7 @@
+@@ -1509,6 +1524,7 @@
  slave-type-conversions 
  slow-launch-time 2
  slow-query-log FALSE
@@ -101,7 +101,7 @@
  sort-buffer-size 2097152
  sql-mode STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
  stack-trace TRUE
-@@ -1507,14 +1523,16 @@
+@@ -1522,9 +1538,9 @@
  sync-relay-log 10000
  sync-relay-log-info 10000
  sysdate-is-now FALSE
@@ -112,6 +112,8 @@
 +table-open-cache 2000
  table-open-cache-instances 8
  tc-heuristic-recover OFF
+ tcp-keepalive-interval 0
+@@ -1533,6 +1549,8 @@
  thread-cache-size 151
  thread-pool-idle-timeout 60
  thread-pool-max-threads 65536
