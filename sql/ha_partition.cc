@@ -4300,14 +4300,13 @@ int ha_partition::write_row(uchar * buf)
     if (m_pre_calling ||
         !bulk_access_executing || !bulk_access_info_exec_tgt->called)
     {
-      if (!part_share->auto_inc_initialized &&
-          !table_share->next_number_keypart)
+      if (!table_share->next_number_keypart)
       {
         /*
           If auto_increment in table_share is not initialized, start by
           initializing it.
         */
-        info(HA_STATUS_AUTO);
+        update_next_auto_inc_val();
       }
       error= update_auto_increment();
 
