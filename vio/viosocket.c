@@ -38,14 +38,6 @@
 # include <sys/filio.h>
 #endif
 
-#ifndef SOL_TCP
-#  ifdef IPPROTO_TCP
-#    define SOL_TCP IPPROTO_TCP
-#  else
-#    define SOL_TCP 6
-#  endif /* IPPROTO_TCP */
-#endif /* SOL_TCP */
-
 /* Network io wait callbacks  for threadpool */
 static void (*before_io_wait)(void)= 0;
 static void (*after_io_wait)(void)= 0;
@@ -559,10 +551,11 @@ int vio_set_keepalive_options(Vio* vio, const struct vio_keepalive_opts *opts)
   if (opts->idle)
   {
 #ifdef TCP_KEEPIDLE // Linux only
-    ret= mysql_socket_setsockopt(vio->mysql_socket, SOL_TCP, TCP_KEEPIDLE, (char *)&opts->idle, sizeof(opts->idle));
+    ret= mysql_socket_setsockopt(vio->mysql_socket, IPPROTO_TCP, TCP_KEEPIDLE, (char *)&opts->idle, sizeof(opts->idle));
 #elif defined (TCP_KEEPALIVE)
-    ret= mysql_socket_setsockopt(vio->mysql_socket, SOL_TCP, TCP_KEEPALIVE, (char *)&opts->idle, sizeof(opts->idle));
+    ret= mysql_socket_setsockopt(vio->mysql_socket, IPPROTO_TCP, TCP_KEEPALIVE, (char *)&opts->idle, sizeof(opts->idle));
 #endif
+    DBUG_ASSERT(!ret);
     if(ret)
       return ret;
   }
@@ -570,7 +563,8 @@ int vio_set_keepalive_options(Vio* vio, const struct vio_keepalive_opts *opts)
 #ifdef TCP_KEEPCNT // Linux only
   if(opts->probes)
   {
-    ret= mysql_socket_setsockopt(vio->mysql_socket, SOL_TCP, TCP_KEEPCNT, (char *)&opts->probes, sizeof(opts->probes));
+    ret= mysql_socket_setsockopt(vio->mysql_socket, IPPROTO_TCP, TCP_KEEPCNT, (char *)&opts->probes, sizeof(opts->probes));
+    DBUG_ASSERT(!ret);
     if(ret)
       return ret;
   }
@@ -578,7 +572,10 @@ int vio_set_keepalive_options(Vio* vio, const struct vio_keepalive_opts *opts)
 
 #ifdef TCP_KEEPINTVL  // Linux only
   if(opts->interval)
-    ret= mysql_socket_setsockopt(vio->mysql_socket, SOL_TCP, TCP_KEEPINTVL, (char *)&opts->interval, sizeof(&opts->interval));
+  {
+    ret= mysql_socket_setsockopt(vio->mysql_socket, IPPROTO_TCP, TCP_KEEPINTVL, (char *)&opts->interval, sizeof(opts->interval));
+    DBUG_ASSERT(!ret);
+  }
 #endif
   return ret;
 #else /*TCP_KEEPIDLE || TCP_KEEPALIVE */
