@@ -42,6 +42,7 @@ Created 3/26/1996 Heikki Tuuri
 #include "que0types.h"
 #include "mem0mem.h"
 #include "trx0xa.h"
+#include "trx0vtq.h"
 #include "ut0vec.h"
 #include "fts0fts.h"
 #include "srv0srv.h"
@@ -836,7 +837,6 @@ typedef enum {
 	TRX_WSREP_ABORT  = 1
 } trx_abort_t;
 
-
 /** Represents an instance of rollback segment along with its state variables.*/
 struct trx_undo_ptr_t {
 	trx_rseg_t*	rseg;		/*!< rollback segment assigned to the
@@ -1269,6 +1269,10 @@ struct trx_t {
 	os_event_t	wsrep_event;	/* event waited for in srv_conc_slot */
 #endif /* WITH_WSREP */
 
+	/* System Versioning */
+	bool		vtq_notify_on_commit;
+					/*!< Notify VTQ for System Versioned update */
+	vtq_query_t	vtq_query;
 	ulint		magic_n;
 
 	/** @return whether any persistent undo log has been generated */
@@ -1299,6 +1303,15 @@ struct trx_t {
 		}
 
 		return(assign_temp_rseg());
+	}
+
+	void init_start_time()
+	{
+		ulint secs;
+		ulint usecs;
+		ut_usectime(&secs, &usecs);
+		start_time = secs;
+		start_time_micro = usecs + (ib_uint64_t) secs * 1000000;
 	}
 
 private:
