@@ -1,4 +1,5 @@
-if (`SELECT count(*) = 0 FROM information_schema.GLOBAL_VARIABLES WHERE
-      VARIABLE_NAME = 'have_ssl' AND VARIABLE_VALUE <> 'NO'`){
-  skip Needs SSL;
-}
+#
+# suite.pm will make sure that all tests including this file
+# will be skipped unless SSL is configured
+#
+source include/not_embedded.inc;
